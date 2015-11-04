@@ -19,10 +19,19 @@
       
       
       <script type="text/javascript">
+          
+          var circs = [];
+          
           // Gets a handle to the element with id canvas
           var canvas = document.getElementById("gameCanvas");
           // Get a 2D context for the canvas.
           var ctx = canvas.getContext("2d");
+          
+          var i= 0;
+          var spawnRate = 1500;
+          var spawnRateOfDescent = 0.50;
+          var lastSpawn = -1;
+
           
           var player = {
               position: {x: 400, y: 450}
@@ -30,38 +39,92 @@
               , width: 40
               , acceleration: {y: 0}
           }
+        
+          // save the starting time (used to calc elapsed time)
+          var time = Date.now();
+          
+          
+          
           
           drawPlayer();
-          
           step();
           
           
-          function step(t) {
-               
-              requestAnimationFrame(step);
-          }
+          
+          
+          
+          
+          
 
           function drawPlayer(){
-              ctx.fillStyle = "rgb(0, 255, 0)";
-              ctx.beginPath();
+              ctx.fillStyle = "rgb(0, 0, 255)";
+              ctx.beginPath(); 
               ctx.rect(player.position.x, player.position.y, player.width, player.height);
               ctx.fill();
               ctx.closePath();
           }
           
+          function step(t) {
+              var time = Date.now();
+              
+              if (time > (lastSpawn + spawnRate)) {
+                  lastSpawn = time;
+                  circ();
+              }
+              
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              for (var i = 0; i < circs.length; i++) {
+                  var object = circs[i];
+                  if(object.y > canvas.height+10)
+                      circs.splice(i,1);
+                  object.y += spawnRateOfDescent;
+                  ctx.beginPath();
+                  ctx.arc(object.x, object.y, 8, 0, Math.PI * 2);
+                  ctx.closePath();
+                  ctx.fillStyle = object.type;
+                  ctx.fill();
+              }
+              drawPlayer();
+              requestAnimationFrame(step);
+          }
+          
+          
+          
+          
           window.addEventListener("keydown", function(event) { 
                ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-              if (event.keyCode == 37 && player.position.x > player.width){
+              if (event.keyCode == 37 && player.position.x > 0){
                   player.position.x -= 5;
               }
-              else if (event.keyCode == 39 && player.position.x > player.width){
+              else if (event.keyCode == 39 && player.position.x < canvas.width-player.width){
                   player.position.x += 5;
               }
                
               
               drawPlayer();
           });
+          
+
+          
+          // Constructor
+          function circ(){
+          
+              var Circle = {
+                  // set this objects type
+                  type: "red",
+                  // sets x randomly
+                  x: Math.floor(Math.random() * (canvas.width - 30) + 15),
+                  // set y
+                  y: -50,
+              }
+              
+              // adds to array
+              circs.push(Circle);
+              }
+
+          
 
     </script>
   </body>
