@@ -31,39 +31,35 @@
               , acceleration: {y: 0}
           }
           
+          drawPlayer();
+          
           step();
           
+          
           function step(t) {
-
-              ctx.fillStyle = "rgb(0, 255, 0)";
-              ctx.rect(player.position.x, player.position.y, player.width, player.height);
-              ctx.fill();
-              
-              
-         
-
-              
-              
+               
               requestAnimationFrame(step);
           }
 
           function drawPlayer(){
               ctx.fillStyle = "rgb(0, 255, 0)";
+              ctx.beginPath();
               ctx.rect(player.position.x, player.position.y, player.width, player.height);
               ctx.fill();
+              ctx.closePath();
           }
           
           window.addEventListener("keydown", function(event) { 
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
+               ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-              if (event.keyCode == 37 && player.position.x < player.width){
+              if (event.keyCode == 37 && player.position.x > player.width){
                   player.position.x -= 5;
-                  console.log("Left");
               }
-              else if (event.keyCode == 39 && player.position.y > player.width){
+              else if (event.keyCode == 39 && player.position.x > player.width){
                   player.position.x += 5;
-                  console.log("Right");
               }
+               
+              
               drawPlayer();
           });
 
