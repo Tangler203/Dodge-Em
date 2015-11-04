@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Dodge 'Em</title>
+
+    <style type="text/css">
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+
+  <body>
+      <canvas id="gameCanvas" width="800px" height="600px"></canvas>
+      
+      
+      
+      
+      <script type="text/javascript">
+          // Gets a handle to the element with id canvas
+          var canvas = document.getElementById("gameCanvas");
+          // Get a 2D context for the canvas.
+          var ctx = canvas.getContext("2d");
+          
+          var player = {
+              position: {x: 400, y: 450}
+              , height: 40
+              , width: 40
+              , acceleration: {y: 0}
+          }
+          
+          step();
+          
+          function step(t) {
+
+              ctx.fillStyle = "rgb(0, 255, 0)";
+              ctx.rect(player.position.x, player.position.y, player.width, player.height);
+              ctx.fill();
+              
+              
+         
+
+              
+              
+              requestAnimationFrame(step);
+          }
+
+          function drawPlayer(){
+              ctx.fillStyle = "rgb(0, 255, 0)";
+              ctx.rect(player.position.x, player.position.y, player.width, player.height);
+              ctx.fill();
+          }
+          
+          window.addEventListener("keydown", function(event) { 
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+              if (event.keyCode == 37 && player.position.x < player.width){
+                  player.position.x -= 5;
+                  console.log("Left");
+              }
+              else if (event.keyCode == 39 && player.position.y > player.width){
+                  player.position.x += 5;
+                  console.log("Right");
+              }
+              drawPlayer();
+          });
+
+    </script>
+  </body>
+</html>
