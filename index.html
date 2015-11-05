@@ -21,6 +21,7 @@
       <script type="text/javascript">
           
           var circs = [];
+          var showScreen = 0;
           
           // Gets a handle to the element with id canvas
           var canvas = document.getElementById("gameCanvas");
@@ -48,7 +49,7 @@
           
           
           // Starts the animation
-          step();
+          startScreen();
           
           
           
@@ -69,7 +70,7 @@
           // The animation frame
           function step(t) {
               var time = Date.now(); // Gets current time
-              
+              showScreen = 1;
               // used for spawning purposes early
               if (time > (lastSpawn + spawnRate)) {
                   lastSpawn = time;
@@ -134,9 +135,20 @@
               else if (event.keyCode == 39 && player.position.x < canvas.width-player.width){
                   player.position.x += 5;
               }
+              
+              else if (event.keyCode == 32 && showScreen == 0){
+                  step();
+              }
+              
+             if(event.keyCode == 32 && showScreen == 2)
+                  startScreen();
                
           });
+
           
+             
+             
+
 
           
           // Constructor
@@ -173,10 +185,34 @@
 
           // game over screen
           function gameover(){ 
+              showScreen = 2;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              ctx.fillStyle = "80px Georgia";
-              ctx.fillText("Game Over",canvas.offsetWidth/2.5,canvas.height/2);
-              ctx.fillText("Score: " + score,canvas.offsetWidth/2.5, canvas.height/2+25);
+              ctx.font = "35px Georgia";
+              ctx.fillStyle ="blue";
+              ctx.fillText("Game Over",100,canvas.height/2 - 40);
+              ctx.fillText("Score: " + score,100, canvas.height/2);
+              ctx.fillText("Press space to",100, canvas.height/2 + 40)
+              ctx.fillText("go back to Start",100, canvas.height/2+80)
+              ctx.fillText("Screen",100, canvas.height/2+120)
+          }
+          
+          // game start screen
+          function startScreen(){
+              //reset Everything
+              showScreen=0;
+              spawnRate = 1500;
+              spawnRateOfDescent = 1;
+              lastSpawn = -1;
+              time = Date.now();
+              score = 0;
+              circs.splice(0,circs.length); // empty circle array
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.font = "50px Georgia";
+              ctx.fillStyle = "blue"
+              ctx.fillText("Dodge 'Em", 75, 45);
+            
+              
+              
           }
 
     </script>
