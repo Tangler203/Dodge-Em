@@ -29,9 +29,9 @@
           var ctx = canvas.getContext("2d");
           
           // How often balls spawn
-          var spawnRate = 1500;
+          var spawnRate = 2000;
           // How fast they Fall
-          var spawnRateOfDescent = 1;
+          var spawnRateOfDescent = 3;
           var lastSpawn = -1;
           // save the starting time (used to calc elapsed time)
           var time = Date.now();
@@ -207,11 +207,38 @@
               score = 0;
               circs.splice(0,circs.length); // empty circle array
               ctx.clearRect(0, 0, canvas.width, canvas.height);
+              
+              //Some text
               ctx.font = "50px Georgia";
               ctx.fillStyle = "blue"
               ctx.fillText("Dodge 'Em", 75, 45);
-            
               
+              ctx.font = "24px Georgia";
+              ctx.fillText("This is you:", 55, 185);
+              ctx.fillText("Dodge these:", 55, 245);
+              ctx.fillText("But hit these:" , 55 , 305);
+              ctx.fillText("Use the arrow keys to move" , 55 , 365);
+              ctx.fillText("left and right" , 55 , 395);
+              ctx.fillText("Press space to start" , 55 , 445);
+              
+              
+              
+              ctx.beginPath(); 
+              ctx.rect(195, 155, player.width, player.height);
+              ctx.fill();
+              ctx.closePath();
+            
+              ctx.beginPath();
+              ctx.arc(225, 235, 16, 0, Math.PI * 2);
+              ctx.closePath();
+              ctx.fillStyle = "red";
+              ctx.fill();
+            
+              ctx.beginPath();
+              ctx.arc(225, 295, 16, 0, Math.PI * 2);
+              ctx.closePath();
+              ctx.fillStyle = "green";
+              ctx.fill();
               
           }
 
