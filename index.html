@@ -13,7 +13,7 @@
   </head>
 
   <body>
-      <canvas id="gameCanvas" width="800px" height="600px"></canvas>
+      <canvas id="gameCanvas" width="400px" height="600px"></canvas>
       
       
       
@@ -30,25 +30,24 @@
           // How often balls spawn
           var spawnRate = 1500;
           // How fast they Fall
-          var spawnRateOfDescent = 0.50;
+          var spawnRateOfDescent = 1;
           var lastSpawn = -1;
-          
           // save the starting time (used to calc elapsed time)
           var time = Date.now();
+          // variable for players score
+          var score = 0;
           
           var player = {
-              position: {x: 400, y: 450}
+              position: {x: canvas.width/2.5, y: (canvas.height/4*3)}
               , height: 40
               , width: 40
-              , acceleration: {y: 0}
           }
         
          
           
           
           
-          
-          drawPlayer();
+          // Starts the animation
           step();
           
           
@@ -71,37 +70,63 @@
           function step(t) {
               var time = Date.now(); // Gets current time
               
-              
+              // used for spawning purposes early
               if (time > (lastSpawn + spawnRate)) {
                   lastSpawn = time;
                   circ();
               }
               
               ctx.clearRect(0, 0, canvas.width, canvas.height);
+              
+              // writes score to top of screen
+              ctx.font="20px Georgia";
+              ctx.fillText("Score: " + score,canvas.offsetWidth/2.5, 25);
 
+              //draws each circle
               for (var i = 0; i < circs.length; i++) {
                   var object = circs[i];
-                  //If Circle reaches bottom, remove from array.
-                  if(object.y > canvas.height+10)
-                      circs.splice(i,1); 
-                  collisionCheck(object); // check if circle has touched square
-                  
+                  //If Circle reaches bottom, remove from array. Add to score if red, slow down spawn rate and speed if green
+                  if(object.y > canvas.height+10){
+                      circs.splice(i,1);
+                      if (object.type =="red")
+                        score++
+                      if (score >= 10 && score%5 == 0){ // increase ball speed if score is 10 or greater and divisible by five
+                          spawnRateOfDescent+=0.15;
+                          if(spawnRate > 450)
+                            spawnRate -= 150;
+                      }
+                  }
+                  if(collisionCheck(object)){// check if circle has touched square
+                      if(object.type == "red"){ //if red end game
+                          i =circs.length+100; // if true end for loop
+                          gameover();
+                          break;
+                      }
+                      else{ //if green reduce spawn rate and slow down balls
+                          circs.splice(i,1);
+                          score++
+                          spawnRate+= 300
+                          spawnRateOfDescent-=0.45;
+                      }
+                  }
                   object.y += spawnRateOfDescent; // move circle
                   ctx.beginPath();
-                  ctx.arc(object.x, object.y, 8, 0, Math.PI * 2);
+                  ctx.arc(object.x, object.y, object.r, 0, Math.PI * 2);
                   ctx.closePath();
                   ctx.fillStyle = object.type;
                   ctx.fill();
               }
-              drawPlayer();
-              requestAnimationFrame(step);
+
+              if(collisionCheck(object) == false){ // check if circle has touched square
+                  drawPlayer();
+                  requestAnimationFrame(step); // if false keep going else end game
+              }
           }
           
           
-          // Player Movement - might replace with jquery
+          // Player Movement
           
           window.addEventListener("keydown", function(event) { 
-               ctx.clearRect(0, 0, canvas.width, canvas.height);
         
               if (event.keyCode == 37 && player.position.x > 0){
                   player.position.x -= 5;
@@ -110,22 +135,30 @@
                   player.position.x += 5;
               }
                
-              
-              drawPlayer();
           });
           
 
           
           // Constructor
           function circ(){
-          
+              var t;
+              // randomise between red and green balls
+              // green balls won't spawn untill score is at least 20
+              if (Math.random() < 0.10 && score >= 20) {
+                  t = "green";
+              } 
+              else {
+                  t = "red";
+              }
               var Circle = {
                   // set this objects type
-                  type: "red",
+                  type: t,
                   // sets x randomly
                   x: Math.floor(Math.random() * (canvas.width - 30) + 15),
                   // set y
                   y: -50,
+                  // set r
+                  r: 16
               }
               
               // adds to array
@@ -134,13 +167,17 @@
           
           function collisionCheck(i){
           // checks if a circle is inside sqaure
-          if(i.x - 8 < player.position.x + player.width && i.x + 8 > player.position.x && i.y < player.position.y + player.height && i.y + 8 > player.position.y){
-              // if true do stuff i.e end game
-              console.log("Collision detected");
-          }
+          return (i.x - 8 < player.position.x + player.width && i.x + 8 > player.position.x && i.y < player.position.y + player.height && i.y + 8 > player.position.y)
+            
           }
 
-          
+          // game over screen
+          function gameover(){ 
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.fillStyle = "80px Georgia";
+              ctx.fillText("Game Over",canvas.offsetWidth/2.5,canvas.height/2);
+              ctx.fillText("Score: " + score,canvas.offsetWidth/2.5, canvas.height/2+25);
+          }
 
     </script>
   </body>
