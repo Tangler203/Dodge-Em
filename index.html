@@ -27,11 +27,14 @@
           // Get a 2D context for the canvas.
           var ctx = canvas.getContext("2d");
           
-          var i= 0;
+          // How often balls spawn
           var spawnRate = 1500;
+          // How fast they Fall
           var spawnRateOfDescent = 0.50;
           var lastSpawn = -1;
-
+          
+          // save the starting time (used to calc elapsed time)
+          var time = Date.now();
           
           var player = {
               position: {x: 400, y: 450}
@@ -40,8 +43,7 @@
               , acceleration: {y: 0}
           }
         
-          // save the starting time (used to calc elapsed time)
-          var time = Date.now();
+         
           
           
           
@@ -64,8 +66,11 @@
               ctx.closePath();
           }
           
+          
+          // The animation frame
           function step(t) {
-              var time = Date.now();
+              var time = Date.now(); // Gets current time
+              
               
               if (time > (lastSpawn + spawnRate)) {
                   lastSpawn = time;
@@ -76,9 +81,12 @@
 
               for (var i = 0; i < circs.length; i++) {
                   var object = circs[i];
+                  //If Circle reaches bottom, remove from array.
                   if(object.y > canvas.height+10)
-                      circs.splice(i,1);
-                  object.y += spawnRateOfDescent;
+                      circs.splice(i,1); 
+                  collisionCheck(object); // check if circle has touched square
+                  
+                  object.y += spawnRateOfDescent; // move circle
                   ctx.beginPath();
                   ctx.arc(object.x, object.y, 8, 0, Math.PI * 2);
                   ctx.closePath();
@@ -90,7 +98,7 @@
           }
           
           
-          
+          // Player Movement - might replace with jquery
           
           window.addEventListener("keydown", function(event) { 
                ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -122,7 +130,15 @@
               
               // adds to array
               circs.push(Circle);
-              }
+          }
+          
+          function collisionCheck(i){
+          // checks if a circle is inside sqaure
+          if(i.x - 8 < player.position.x + player.width && i.x + 8 > player.position.x && i.y < player.position.y + player.height && i.y + 8 > player.position.y){
+              // if true do stuff i.e end game
+              console.log("Collision detected");
+          }
+          }
 
           
 
