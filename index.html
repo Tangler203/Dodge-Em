@@ -29,14 +29,14 @@
           var ctx = canvas.getContext("2d");
           
           // How often balls spawn
-          var spawnRate = 2000;
+          var spawnRate;
           // How fast they Fall
-          var spawnRateOfDescent = 3;
-          var lastSpawn = -1;
+          var spawnRateOfDescent;
+          var lastSpawn;
           // save the starting time (used to calc elapsed time)
-          var time = Date.now();
+          var time;
           // variable for players score
-          var score = 0;
+          var score;
           
           var player = {
               position: {x: canvas.width/2.5, y: (canvas.height/4*3)}
@@ -57,7 +57,7 @@
           
           
           
-
+          // When called draws the player
           function drawPlayer(){
               ctx.fillStyle = "rgb(0, 0, 255)";
               ctx.beginPath(); 
@@ -90,13 +90,13 @@
                   if(object.y > canvas.height+10){
                       circs.splice(i,1);
                       if (object.type =="red")
-                        score++
+                          score++
                       if (score >= 10 && score%5 == 0){ // increase ball speed if score is 10 or greater and divisible by five
-                          spawnRateOfDescent+=0.15;
-                          if(spawnRate > 450)
-                            spawnRate -= 150;
+                          spawnRateOfDescent+=0.25;
+                          if(spawnRate > 250)
+                            spawnRate -= 250;
                       }
-                  }
+                  }// end iff
                   if(collisionCheck(object)){// check if circle has touched square
                       if(object.type == "red"){ //if red end game
                           i =circs.length+100; // if true end for loop
@@ -106,26 +106,26 @@
                       else{ //if green reduce spawn rate and slow down balls
                           circs.splice(i,1);
                           score++
-                          spawnRate+= 300
-                          spawnRateOfDescent-=0.45;
-                      }
-                  }
+                          spawnRate+= 500
+                          spawnRateOfDescent-=0.5;
+                      }// end else
+                  }// end if
                   object.y += spawnRateOfDescent; // move circle
                   ctx.beginPath();
                   ctx.arc(object.x, object.y, object.r, 0, Math.PI * 2);
                   ctx.closePath();
                   ctx.fillStyle = object.type;
                   ctx.fill();
-              }
+              }// end for loop that makes balls
 
               if(collisionCheck(object) == false){ // check if circle has touched square
                   drawPlayer();
                   requestAnimationFrame(step); // if false keep going else end game
-              }
-          }
+              } // end if
+          } // end step
           
           
-          // Player Movement
+          // keyboard commands
           
           window.addEventListener("keydown", function(event) { 
         
@@ -156,8 +156,8 @@
               var t;
               // randomise between red and green balls
               // green balls won't spawn untill score is at least 20
-              if (Math.random() < 0.10 && score >= 20) {
-                  t = "green";
+              if (Math.random() < 0.05 && score >= 20) {
+                  t = "#64FE2E";
               } 
               else {
                   t = "red";
@@ -175,11 +175,11 @@
               
               // adds to array
               circs.push(Circle);
-          }
+          } // end circ
           
           function collisionCheck(i){
           // checks if a circle is inside sqaure
-          return (i.x - 8 < player.position.x + player.width && i.x + 8 > player.position.x && i.y < player.position.y + player.height && i.y + 8 > player.position.y)
+          return (i.x - 16 < player.position.x + player.width && i.x + 16 > player.position.x && i.y < player.position.y + player.height && i.y + 8 > player.position.y)
             
           }
 
@@ -200,8 +200,8 @@
           function startScreen(){
               //reset Everything
               showScreen=0;
-              spawnRate = 1500;
-              spawnRateOfDescent = 1;
+              spawnRate = 1250;
+              spawnRateOfDescent = 1.25;
               lastSpawn = -1;
               time = Date.now();
               score = 0;
@@ -237,7 +237,7 @@
               ctx.beginPath();
               ctx.arc(225, 295, 16, 0, Math.PI * 2);
               ctx.closePath();
-              ctx.fillStyle = "green";
+              ctx.fillStyle = "#64FE2E";
               ctx.fill();
               
           }
